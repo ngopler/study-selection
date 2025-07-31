@@ -94,6 +94,7 @@ uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 # Pemilihan model dan pemrosesan embeddings
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
+    df.fillna('', inplace=True)
     # Rename kolom agar sesuai dengan skema internal
     df = df.rename(columns={
         'Author/s': 'Authors',

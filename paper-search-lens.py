@@ -155,6 +155,7 @@ if df is not None and index is not None:
                 query_text = f"{research_question} {keywords}"
                 model = SentenceTransformer(st.session_state["selected_model"])
                 query_embedding = model.encode([query_text])
+                faiss.normalize_L2(query_embedding)  # <- tambah baris ini
                 result_indices, result_distances = search_with_threshold(index, query_embedding, threshold)
 
                 if len(result_indices) == 0:

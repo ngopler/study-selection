@@ -27,20 +27,16 @@ st.markdown("""
 
 # Function to format APA 7th citation
 def format_apa_citation(row):
-    authors = row['Authors']
-    year = row['Year']
+    authors = row['Author/s']
+    year = row['Publication Year']
     title = row['Title']
-    source_title = row['Source title']
-    volume = row['Volume']
-    issue = row['Issue']
-    page_start = row['Page start']
-    page_end = row['Page end']
+    source_title = row['Source Title']
     doi = row['DOI']
 
     if pd.notna(authors):
-        author_list = authors.split(', ')
+        author_list = authors.split('; ')
         if len(author_list) > 1:
-            formatted_authors = ', '.join(author_list[:-1]) + ', & ' + author_list[-1]
+            formatted_authors = '; '.join(author_list[:-1]) + '; & ' + author_list[-1]
         else:
             formatted_authors = authors
     else:
@@ -49,19 +45,11 @@ def format_apa_citation(row):
     formatted_title = title + '.' if title else ''
     formatted_source = source_title if source_title else ''
 
-    volume_issue = ''
-    if pd.notna(volume):
-        volume_issue += f"{volume}"
-    if pd.notna(issue):
-        volume_issue += f"({issue})"
-    if volume_issue:
-        volume_issue += ', '
+    volume_issue = ', '
+    
 
     pages = ''
-    if pd.notna(page_start):
-        pages = f"{page_start}"
-        if pd.notna(page_end):
-            pages += f"-{page_end}"
+    
 
     doi_str = f" https://doi.org/{doi}" if pd.notna(doi) else ''
 
@@ -114,7 +102,7 @@ if uploaded_file is not None:
     if st.button("Go Embeddings"):
         with st.spinner(f"Membuat embeddings dengan model {selected_model_name}..."):
             model = SentenceTransformer(selected_model_name)
-            text_to_embed = df['Title'].fillna('') + " " + df['Abstract'].fillna('') + " " + df['Author Keywords'].fillna('')
+            text_to_embed = df['Title'].fillna('') + " " + df['Abstract'].fillna('') + " " + df['Keywords'].fillna('')
             paper_embeddings = model.encode(text_to_embed.tolist(), show_progress_bar=True)
             index = create_faiss_index(paper_embeddings)
             st.session_state["paper_embeddings"] = paper_embeddings

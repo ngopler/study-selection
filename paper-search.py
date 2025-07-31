@@ -142,7 +142,7 @@ if df is not None and index is not None:
                         results.append({
                             "No": i + 1,
                             "Paper": format_apa_citation(paper),
-                            "Cited by": paper['Cited by'],
+                            "Cited by": "0",
                             "Similarity": f"{score:.3f}"
                         })
 

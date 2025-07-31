@@ -93,17 +93,6 @@ uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 # Pemilihan model dan pemrosesan embeddings
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
-    # Rename kolom agar sesuai dengan skema internal
-    df = df.rename(columns={
-        'Author/s': 'Authors',
-        'Publication Year': 'Year',
-        'Issue Number': 'Issue',
-        'Start Page': 'Page start',
-        'End Page': 'Page end',
-        'Keywords': 'Author Keywords',
-        'Citing Works Count': 'Cited by'  # disamakan agar tidak perlu ubah di banyak tempat
-    })
-    
     st.session_state["df"] = df
 
     st.subheader("Pilih Model Embedding")

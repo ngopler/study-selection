@@ -27,16 +27,20 @@ st.markdown("""
 
 # Function to format APA 7th citation
 def format_apa_citation(row):
-    authors = row['Author/s']
-    year = row['Publication Year']
+    authors = row['Authors']
+    year = row['Year']
     title = row['Title']
-    source_title = row['Source Title']
+    source_title = row['Source title']
+    volume = row['Volume']
+    issue = row['Issue']
+    page_start = row['Page start']
+    page_end = row['Page end']
     doi = row['DOI']
 
     if pd.notna(authors):
-        author_list = authors.split('; ')
+        author_list = authors.split(', ')
         if len(author_list) > 1:
-            formatted_authors = '; '.join(author_list[:-1]) + '; & ' + author_list[-1]
+            formatted_authors = ', '.join(author_list[:-1]) + ', & ' + author_list[-1]
         else:
             formatted_authors = authors
     else:
@@ -45,11 +49,19 @@ def format_apa_citation(row):
     formatted_title = title + '.' if title else ''
     formatted_source = source_title if source_title else ''
 
-    volume_issue = ', '
-    
+    volume_issue = ''
+    if pd.notna(volume):
+        volume_issue += f"{volume}"
+    if pd.notna(issue):
+        volume_issue += f"({issue})"
+    if volume_issue:
+        volume_issue += ', '
 
     pages = ''
-    
+    if pd.notna(page_start):
+        pages = f"{page_start}"
+        if pd.notna(page_end):
+            pages += f"-{page_end}"
 
     doi_str = f" https://doi.org/{doi}" if pd.notna(doi) else ''
 
@@ -81,6 +93,17 @@ uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 # Pemilihan model dan pemrosesan embeddings
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
+    # Rename kolom agar sesuai dengan skema internal
+    df = df.rename(columns={
+        'Author/s': 'Authors',
+        'Publication Year': 'Year',
+        'Issue Number': 'Issue',
+        'Start Page': 'Page start',
+        'End Page': 'Page end',
+        'Keywords': 'Author Keywords',
+        'Citing Works Count': 'Cited by'  # disamakan agar tidak perlu ubah di banyak tempat
+    })
+    
     st.session_state["df"] = df
 
     st.subheader("Pilih Model Embedding")
@@ -102,7 +125,7 @@ if uploaded_file is not None:
     if st.button("Go Embeddings"):
         with st.spinner(f"Membuat embeddings dengan model {selected_model_name}..."):
             model = SentenceTransformer(selected_model_name)
-            text_to_embed = df['Title'].fillna('') + " " + df['Abstract'].fillna('') + " " + df['Keywords'].fillna('')
+            text_to_embed = df['Title'].fillna('') + " " + df['Abstract'].fillna('') + " " + df['Author Keywords'].fillna('')
             paper_embeddings = model.encode(text_to_embed.tolist(), show_progress_bar=True)
             index = create_faiss_index(paper_embeddings)
             st.session_state["paper_embeddings"] = paper_embeddings
@@ -142,7 +165,7 @@ if df is not None and index is not None:
                         results.append({
                             "No": i + 1,
                             "Paper": format_apa_citation(paper),
-                            "Cited by": "0",
+                            "Cited by": paper['Cited by'],
                             "Similarity": f"{score:.3f}"
                         })
 

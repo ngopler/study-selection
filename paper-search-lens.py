@@ -30,12 +30,12 @@ def format_apa_citation(row):
     authors = row['Authors']
     year = row['Year']
     title = row['Title']
-    source_title = row['Source title']
+    source_title = row['Source Title']  # Fix di sini
     volume = row['Volume']
     issue = row['Issue']
     page_start = row['Page start']
     page_end = row['Page end']
-    doi = row['DOI']
+    doi = row['DOI'] if 'DOI' in row else None  # Hindari error kalau tidak ada kolom DOI
 
     if pd.notna(authors):
         author_list = authors.split(', ')
@@ -68,6 +68,7 @@ def format_apa_citation(row):
     citation = f"{formatted_authors} ({year}). {formatted_title} {formatted_source}, {volume_issue}{pages}.{doi_str}"
     citation = re.sub(' +', ' ', citation).strip()
     return citation
+
 
 def create_faiss_index(embeddings):
     dimension = embeddings.shape[1]

@@ -222,6 +222,7 @@ if df is not None and index is not None:
             with st.spinner("Searching..."):
                 model = SentenceTransformer(st.session_state["selected_model"])
                 query_embedding_inclusion = model.encode([inclusion_criteria])
+                faiss.normalize_L2(query_embedding_inclusion)  # <- tambah baris ini
                 inclusion_indices, inclusion_scores = search_with_threshold(index, query_embedding_inclusion, threshold)
 
                 if len(inclusion_indices) == 0:
@@ -232,6 +233,7 @@ if df is not None and index is not None:
                     inclusion_set = set(inclusion_indices)
                     if exclusion_criteria.strip():
                         query_embedding_exclusion = model.encode([exclusion_criteria])
+                        faiss.normalize_L2(query_embedding_exclusion)  # <- tambah baris ini
                         exclusion_indices, _ = search_with_threshold(index, query_embedding_exclusion, threshold)
                         exclusion_set = set(exclusion_indices)
                         final_indices = list(inclusion_set - exclusion_set)

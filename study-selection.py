@@ -6,16 +6,12 @@ from sentence_transformers import SentenceTransformer
 import re
 from io import StringIO
 
-st.markdown(
-    r"""
+hide_github_icon = """
     <style>
-    .stDeployButton {
-            visibility: hidden;
-        }
+        [data-testid="stToolbar"] {visibility: hidden;}
     </style>
-    """, unsafe_allow_html=True
-)
-
+"""
+st.markdown(hide_github_icon, unsafe_allow_html=True)
 
 
 st.set_page_config(page_title="Research Paper Search System", layout="wide")

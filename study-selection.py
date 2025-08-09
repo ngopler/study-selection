@@ -6,6 +6,16 @@ from sentence_transformers import SentenceTransformer
 import re
 from io import StringIO
 
+# Add custom CSS to hide the GitHub icon
+hide_github_icon = """
+#GithubIcon {
+  visibility: hidden;
+}
+"""
+st.markdown(hide_github_icon, unsafe_allow_html=True)
+
+
+
 st.set_page_config(page_title="Research Paper Search System", layout="wide")
 
 st.markdown("""

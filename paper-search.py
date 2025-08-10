@@ -6,6 +6,13 @@ from sentence_transformers import SentenceTransformer
 import re
 from io import StringIO
 
+hide_github_icon = """
+    <style>
+        [data-testid="stToolbar"] {visibility: hidden;}
+    </style>
+"""
+st.markdown(hide_github_icon, unsafe_allow_html=True)
+
 # Lebarkan layout halaman dan atur padding agar judul lebih ke atas
 st.set_page_config(page_title="Research Paper Search System", layout="wide")
 

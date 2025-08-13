@@ -1,0 +1,21 @@
+# Env & secrets
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Python umum
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+.envrc
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

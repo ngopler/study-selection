@@ -3,3 +3,6 @@ pandas
 numpy
 faiss-cpu
 sentence-transformers
+pdfplumber
+google-generativeai
+python-dotenv
